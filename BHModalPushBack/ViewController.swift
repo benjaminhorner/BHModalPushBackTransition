@@ -57,6 +57,7 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate {
         //present details view controller
         let details = storyboard!.instantiateViewControllerWithIdentifier("modalVC") as! ModalViewController
         details.transitioningDelegate = self
+        details.modalPresentationStyle = UIModalPresentationStyle.Custom
         presentViewController(details, animated: true, completion: nil)
         
     }

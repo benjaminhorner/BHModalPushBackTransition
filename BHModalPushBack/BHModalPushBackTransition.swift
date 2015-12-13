@@ -11,13 +11,13 @@ import UIKit
 class BHModalPushBackTransition: NSObject, UIViewControllerAnimatedTransitioning {
     
     
-    let duration = 0.3
+    let duration = 0.35
     let startSize: CGFloat = 1
-    let endSize: CGFloat = 0.92
+    let endSize: CGFloat = 0.95
     let startOpacity: CGFloat = 1
     let endOpacity: CGFloat = 0.65
     let startPosition: CGFloat = UIScreen.mainScreen().bounds.height
-    let endPosition: CGFloat = 0
+    let endPosition: CGFloat = 30
     var presenting: Bool  = true
     
     
@@ -30,13 +30,14 @@ class BHModalPushBackTransition: NSObject, UIViewControllerAnimatedTransitioning
     func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
         
         let containerView = transitionContext.containerView()!
+                
+        let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)
+        let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)
         
-        let toView =
-        transitionContext.viewForKey(UITransitionContextToViewKey)!
+        let showingView = presenting ? fromVC!.view : toVC!.view
+        let modalView = presenting ? toVC!.view : fromVC!.view
         
-        let modalView = presenting ? toView : transitionContext.viewForKey(UITransitionContextFromViewKey)!
-        
-        let showingView = presenting ? transitionContext.viewForKey(UITransitionContextFromViewKey)! : toView
+        let toView = modalView
         
         let origin = presenting ? startPosition : endPosition
         
@@ -64,10 +65,9 @@ class BHModalPushBackTransition: NSObject, UIViewControllerAnimatedTransitioning
         
         modalView.frame.origin.y = origin
         
-        
         containerView.addSubview(toView)
-        containerView.addSubview(showingView)
-        containerView.bringSubviewToFront(modalView)
+        
+        toVC?.beginAppearanceTransition(true, animated: true)
         
         
         UIView.animateWithDuration(duration, animations: { () -> Void in
@@ -77,6 +77,7 @@ class BHModalPushBackTransition: NSObject, UIViewControllerAnimatedTransitioning
             showingView.alpha = opacityEnd
             
             }) { (completed) -> Void in
+                toVC?.endAppearanceTransition()
                 transitionContext.completeTransition(true)
         }
         
